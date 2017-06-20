@@ -4,7 +4,8 @@ require 'include/Core.class.php';
 class pieChart extends Core {
 
 	function render() {
-		$queryResult = mysqli_query($this -> database, 'SELECT * FROM `vehiclemodelyear`;');
+		global $queryResult;
+		$queryResult = mysqli_query($this -> database, 'SELECT make FROM `vehiclemodelyear`;');
 		$formattedRes = array();
 		$totalCount = 0;
 		while ($row = mysqli_fetch_assoc($queryResult)) {
@@ -18,30 +19,30 @@ class pieChart extends Core {
 		}
 
 		$this -> cData = $formattedRes;
-		$this -> filterOther();
-
+		$otherData = $this -> filterOther(100);
+		$this -> template -> assign('otherTable', $otherData);
 		$this -> template -> assign('chartData', $this -> cData);
 		$this -> template -> display('pie.tpl');
 	}
 
-	function filterOther() {
+	function filterOther($minForOther) {
 		$otherCount = 0;
+		$otherTable = array();
 		foreach ($this -> cData as $k => $v) {
-			if (intval($v) < 100) {
+			if (intval($v) < $minForOther) {
+				$otherTable[] = array($k => (string) $v); 
 				unset($this -> cData[$k]);
 				$otherCount += intval($v);
 			}
 		}
 		$this -> cData = $this -> cData + array('Other' => $otherCount);
-	}
-
-	public function reload() {
-
+		return $otherTable;
 	}
 
 }
 
 $pie = new pieChart();
 $pie -> render();
+$pie -> clean();
 
 ?>
