@@ -28,7 +28,7 @@ class homePage extends Core {
 		$manufacts = array();
 		$manQuery = mysqli_query($this -> database, 'SELECT DISTINCT make FROM `vehiclemodelyear`;');
 		while ($row = mysqli_fetch_assoc($manQuery)) {
-			array_push($manufacts, $row['make']);
+			$manufacts[] = $row['make'];
 		}
 		
 		$this -> template -> assign('dropOpts', $manufacts);

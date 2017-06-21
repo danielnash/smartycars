@@ -30,7 +30,7 @@ class pieChart extends Core {
 		$otherTable = array();
 		foreach ($this -> cData as $k => $v) {
 			if (intval($v) < $minForOther) {
-				$otherTable[] = array($k => (string) $v); 
+				$otherTable[$k] = $v; 
 				unset($this -> cData[$k]);
 				$otherCount += intval($v);
 			}
